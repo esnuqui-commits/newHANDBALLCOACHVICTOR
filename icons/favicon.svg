@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b86ff"/><stop offset="1" stop-color="#0a2a73"/></linearGradient>
+ <radialGradient id="ball" cx="36%" cy="30%" r="85%"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d3e2fa"/></radialGradient>
+ <clipPath id="clip"><rect width="1024" height="1024" rx="224"/></clipPath>
+ <clipPath id="bc"><circle cx="545" cy="615" r="264"/></clipPath>
+</defs>
+<g clip-path="url(#clip)">
+ <rect width="1024" height="1024" fill="url(#bg)"/>
+ <g fill="none" stroke="#fff" stroke-linecap="round">
+  <circle cx="512" cy="-60" r="800" stroke-width="22" opacity=".40"/>
+  <circle cx="512" cy="-60" r="985" stroke-width="20" stroke-dasharray="70 52" opacity=".28"/>
+ </g>
+ <g transform="translate(512 600) scale(1.0) translate(-512 -600)">
+  <g stroke="#fff" stroke-width="5" opacity=".28"><line x1="302" y1="150" x2="302" y2="380"/><line x1="358" y1="150" x2="358" y2="380"/><line x1="414" y1="150" x2="414" y2="380"/><line x1="470" y1="150" x2="470" y2="380"/><line x1="526" y1="150" x2="526" y2="380"/><line x1="582" y1="150" x2="582" y2="380"/><line x1="638" y1="150" x2="638" y2="380"/><line x1="694" y1="150" x2="694" y2="380"/><line x1="750" y1="150" x2="750" y2="380"/><line x1="250" y1="206" x2="774" y2="206"/><line x1="250" y1="262" x2="774" y2="262"/><line x1="250" y1="318" x2="774" y2="318"/><line x1="250" y1="374" x2="774" y2="374"/></g>
+  <path d="M250 392V150H774V392" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+  <g stroke="#fff" stroke-width="26" stroke-linecap="round" opacity=".85">
+   <line x1="70" y1="500" x2="200" y2="500"/><line x1="40" y1="630" x2="185" y2="630" opacity=".7"/><line x1="90" y1="760" x2="215" y2="760" opacity=".5"/>
+  </g>
+  <ellipse cx="561" cy="917" rx="216.0" ry="30" fill="#031a4d" opacity=".35"/>
+  <circle cx="545" cy="615" r="270" fill="url(#ball)" stroke="#0b2f7a" stroke-width="14"/>
+  <g clip-path="url(#bc)" fill="none" stroke="#1d57d6" stroke-width="17" stroke-linecap="round"><path d="M545 615 Q648.1 746.9 545.0 885.0"/><path d="M434.1 638.6 Q393.5 761.3 311.2 750.0" opacity=".9"/><path d="M545 615 Q379.2 638.3 311.2 480.0"/><path d="M580.0 507.2 Q494.1 410.7 545.0 345.0" opacity=".9"/><path d="M545 615 Q607.7 459.8 778.8 480.0"/><path d="M620.9 699.3 Q747.4 673.0 778.8 750.0" opacity=".9"/></g>
+  <circle cx="545" cy="615" r="270" fill="none" stroke="#0b2f7a" stroke-width="14"/>
+ </g>
+</g>
+</svg>

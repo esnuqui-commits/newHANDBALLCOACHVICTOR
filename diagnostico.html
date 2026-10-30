@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Diagnóstico de instalación · VICTOTALCOACH</title>
+<style>
+body{font:16px/1.5 system-ui,sans-serif;max-width:820px;margin:24px auto;padding:0 16px;color:#111827}
+h1{font-size:22px}.row{display:flex;gap:10px;padding:8px 10px;border-radius:10px;margin:6px 0;background:#f3f6fb;align-items:flex-start}
+.ok{background:#e8f7ee}.bad{background:#fdeaea}.warn{background:#fff6dd}.ic{width:26px;flex:none;text-align:center}
+small{color:#4b5563}code{background:#e5e7eb;padding:1px 5px;border-radius:5px}
+textarea{width:100%;height:170px;font:12px monospace}button{padding:9px 14px;border-radius:10px;border:0;background:#0b2f7a;color:#fff;font-weight:700;cursor:pointer}
+img.t{width:40px;height:40px;border-radius:8px;background:#ddd}
+</style></head><body>
+<h1>🔎 Diagnóstico de instalación</h1>
+<p>Abre esta página <b>en el mismo navegador y la misma dirección</b> desde la que instalas la app. Muestra qué recibe tu navegador.</p>
+<div id="out"></div>
+<p><button id="inst" style="display:none">⬇️ Instalar ahora</button></p>
+<h2>Resumen para copiar y enviar</h2><textarea id="sum" readonly></textarea>
+<script>
+const out=document.getElementById('out'),lines=[];
+function add(state,title,detail){const c={ok:'✅',bad:'❌',warn:'⚠️'}[state];out.insertAdjacentHTML('beforeend','<div class="row '+state+'"><div class="ic">'+c+'</div><div><b>'+title+'</b><br><small>'+(detail||'')+'</small></div></div>');lines.push(c+' '+title+' — '+String(detail||'').replace(/<[^>]+>/g,''))}
+let deferred=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;const b=document.getElementById('inst');b.style.display='';b.onclick=()=>deferred.prompt()});
+(async()=>{
+ add('ok','Dirección',location.href+'<br>Navegador: '+navigator.userAgent.slice(0,110)+((navigator.brave&&await navigator.brave.isBrave())?' · <b>Brave</b>':''));
+ add(location.protocol==='https:'||location.hostname==='127.0.0.1'||location.hostname==='localhost'?'ok':'bad','Contexto seguro',location.protocol==='file:'?'Abierta como archivo (file://): <b>no se puede instalar</b>. Ábrela desde el lanzador o desde https.':location.origin);
+ let ver='?';
+ try{const r=await fetch('version.txt',{cache:'no-store'});ver=r.ok?(await r.text()).trim():'HTTP '+r.status;add(r.ok?'ok':'bad','Versión de los archivos',ver+(r.ok?'':' — esta carpeta NO tiene version.txt: es una versión antigua')+' · servidor: '+(r.headers.get('X-VTC-Server')||'(no es el servidor de la V2)')+' · caché: '+(r.headers.get('Cache-Control')||'ninguna'))}catch(e){add('bad','Versión de los archivos','No se pudo leer: '+e.message)}
+ // la página principal enlaza el manifiesto?
+ try{const t=await (await fetch('VICTOTALCOACH.html',{cache:'no-store'})).text();const has=/rel="manifest"/.test(t);add(has?'ok':'bad','La página principal enlaza el manifiesto',has?'Sí':'NO: el HTML que sirve este servidor es una versión antigua sin manifiesto. Cierra todo y vuelve a abrir la app desde el .app nuevo.')}catch(e){add('bad','Página principal','No se pudo leer: '+e.message)}
+ // manifiesto
+ let man=null;
+ try{const r=await fetch('manifest.webmanifest',{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);man=await r.json();add('ok','Manifiesto',man.name+' · display: '+man.display+' · start_url: '+man.start_url+' · '+(man.icons||[]).length+' iconos')}catch(e){add('bad','Manifiesto','No se pudo cargar manifest.webmanifest ('+e.message+'). Sin él el navegador no pone icono.')}
+ if(man&&man.icons){for(const ic of man.icons){const u=new URL(ic.src,location.href).href;await new Promise(res=>{const im=new Image();im.className='t';im.onload=()=>{add('ok','Icono '+ic.sizes+' ('+ic.purpose+')','<img class="t" src="'+u+'"> cargado: '+im.naturalWidth+'×'+im.naturalHeight);res()};im.onerror=()=>{add('bad','Icono '+ic.sizes+' ('+ic.purpose+')','NO se pudo cargar '+u);res()};im.src=u+'?d='+Date.now()})}}
+ // service worker
+ if(!('serviceWorker' in navigator))add('bad','Service worker','Este navegador/contexto no lo admite');
+ else{try{const reg=await navigator.serviceWorker.getRegistration();add(reg?'ok':'warn','Service worker',reg?('registrado · alcance '+reg.scope+' · '+(reg.active?'activo':'instalando')):'Aún no registrado: abre la app una vez (VICTOTALCOACH.html) y recarga esta página')}catch(e){add('bad','Service worker',e.message)}}
+ add(matchMedia('(display-mode: standalone)').matches?'ok':'warn','Modo de ventana',matchMedia('(display-mode: standalone)').matches?'Estás en la app instalada':'Pestaña normal del navegador');
+ setTimeout(()=>{add(deferred?'ok':'warn','Aviso de instalación del navegador',deferred?'El navegador ofrece instalar (botón «Instalar ahora» arriba)':'El navegador no ha lanzado el aviso automático. Brave suele instalar desde el menú ⋮ → «Guardar y compartir» → «Instalar…», y a veces solo si la app NO está ya instalada (mira brave://apps).');
+  document.getElementById('sum').value='VICTOTALCOACH · diagnóstico\n'+lines.join('\n')},900);
+})();
+</script></body></html>
